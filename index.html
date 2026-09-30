@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost of Capital Studio & AI Advisor | Finance Edu Edition</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- KaTeX for Academic Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+  <!-- Top Global Navigation Header -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Logo & Title -->
+        <div class="flex items-center space-x-3 cursor-pointer" data-go-tab="home">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-indigo-600 flex items-center justify-center shadow-md">
+            <span class="text-white font-bold text-base font-heading tracking-wider">WACC</span>
+          </div>
+          <div>
+            <div class="text-lg font-bold font-heading tracking-tight flex items-center space-x-2">
+              <span>Cost of Capital Studio</span>
+              <span class="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">AI Advisor</span>
+            </div>
+            <p class="text-xs text-slate-400">Corporate Finance & WACC Education</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden xl:flex space-x-1">
+          <button data-tab-target="home" class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition bg-emerald-700 text-white">Dashboard</button>
+          <button data-tab-target="debt" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">Cost of Debt</button>
+          <button data-tab-target="pref" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">Preference</button>
+          <button data-tab-target="equity" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">Equity</button>
+          <button data-tab-target="wacc" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">WACC Calculator</button>
+          <button data-tab-target="mcc" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">MCC & Breakpoints</button>
+          <button data-tab-target="compare" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">Comparison</button>
+          <button data-tab-target="advisor" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">AI Advisor</button>
+          <button data-tab-target="learn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">Learn</button>
+          <button data-tab-target="history" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-200 hover:bg-slate-800 transition">History</button>
+        </nav>
+
+        <!-- Right Side: Currency Selector -->
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-1.5 bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700">
+            <span class="text-xs text-slate-400 font-medium">Currency:</span>
+            <select id="currency-selector" class="bg-transparent text-xs font-semibold text-emerald-400 focus:outline-none cursor-pointer">
+              <option value="INR" selected>₹ INR (Rupee)</option>
+              <option value="USD">$ USD (Dollar)</option>
+              <option value="EUR">€ EUR (Euro)</option>
+              <option value="GBP">£ GBP (Pound)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mobile Scrollable Navigation -->
+      <div class="flex xl:hidden overflow-x-auto py-2 space-x-1 border-t border-slate-800 text-xs scrollbar-none">
+        <button data-tab-target="home" class="px-2.5 py-1 rounded whitespace-nowrap bg-emerald-700 text-white">Dashboard</button>
+        <button data-tab-target="debt" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">Debt (Kd)</button>
+        <button data-tab-target="pref" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">Preference (Kp)</button>
+        <button data-tab-target="equity" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">Equity (Ke)</button>
+        <button data-tab-target="wacc" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">WACC</button>
+        <button data-tab-target="mcc" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">MCC & Breakpoints</button>
+        <button data-tab-target="compare" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">Comparison</button>
+        <button data-tab-target="advisor" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">AI Advisor</button>
+        <button data-tab-target="learn" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">Learn</button>
+        <button data-tab-target="history" class="px-2.5 py-1 rounded whitespace-nowrap text-slate-300">History</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Presets Bar -->
+  <div id="preset-bar" class="bg-slate-100 border-b border-slate-200 py-2 px-4 no-print">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs text-slate-600 gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="font-semibold text-slate-800 flex items-center">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1.5"></span>
+          Quick Presets:
+        </span>
+        <button data-load-preset="ex1" class="px-2 py-0.5 rounded bg-white hover:bg-emerald-50 border border-slate-200 text-slate-700 font-medium transition shadow-2xs">
+          Ex 1: Cost of Debt (₹10k @ 30% tax)
+        </button>
+        <button data-load-preset="ex2" class="px-2 py-0.5 rounded bg-white hover:bg-indigo-50 border border-slate-200 text-slate-700 font-medium transition shadow-2xs">
+          Ex 2: CAPM Equity (Rf=6%, β=1.2)
+        </button>
+        <button data-load-preset="ex3" class="px-2 py-0.5 rounded bg-white hover:bg-emerald-50 border border-slate-200 text-slate-700 font-medium transition shadow-2xs">
+          Ex 3: WACC Comprehensive (₹1M Total)
+        </button>
+        <button data-load-preset="ex4" class="px-2 py-0.5 rounded bg-white hover:bg-amber-50 border border-slate-200 text-slate-700 font-medium transition shadow-2xs">
+          Ex 4: MCC & Breakpoints
+        </button>
+      </div>
+      <div class="hidden lg:block text-slate-500 italic">
+        Corporate Finance formulas verified with student step-by-step substitution
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ============================================================== -->
+    <!-- TAB 1: MAIN DASHBOARD -->
+    <!-- ============================================================== -->
+    <section id="view-home" class="tab-view space-y-8">
+      
+      <!-- Philosophy Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-lg border border-slate-800">
+        <div class="relative z-10 max-w-3xl space-y-3">
+          <span class="inline-block text-xs uppercase tracking-widest font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+            Core Financial Principle
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold font-heading text-white leading-tight">
+            "Cost of capital is the minimum return a company generally needs to earn to satisfy its providers of finance."
+          </h1>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Every business project must generate cash returns exceeding this hurdle rate to create economic value for shareholders.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button data-go-tab="wacc" class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition shadow-sm">
+              Calculate Full WACC →
+            </button>
+            <button data-go-tab="advisor" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition">
+              Open AI Cost Advisor →
+            </button>
+            <button data-go-tab="mcc" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm transition">
+              Marginal Cost of Capital →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financing Structure Diagram Card -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+          Fundamental Corporate Financing Architecture
+        </h3>
+        <div class="flex flex-col md:flex-row items-center justify-between gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          
+          <div class="flex-1 w-full bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-center">
+            <div class="text-xs font-bold text-emerald-800">Cost of Debt (Kd)</div>
+            <div class="text-[11px] text-emerald-600 mt-0.5">Tax-deductible interest • Low risk for lender</div>
+            <div class="text-xs font-mono font-bold text-emerald-700 mt-1">Wd × Kd</div>
+          </div>
+
+          <span class="text-slate-400 font-bold text-lg">+</span>
+
+          <div class="flex-1 w-full bg-amber-50 border border-amber-200 p-3 rounded-xl text-center">
+            <div class="text-xs font-bold text-amber-800">Preference Shares (Kp)</div>
+            <div class="text-[11px] text-amber-600 mt-0.5">Fixed dividend • After-tax payout</div>
+            <div class="text-xs font-mono font-bold text-amber-700 mt-1">Wp × Kp</div>
+          </div>
+
+          <span class="text-slate-400 font-bold text-lg">+</span>
+
+          <div class="flex-1 w-full bg-indigo-50 border border-indigo-200 p-3 rounded-xl text-center">
+            <div class="text-xs font-bold text-indigo-800">Cost of Equity (Ke)</div>
+            <div class="text-[11px] text-indigo-600 mt-0.5">Residual risk • Highest return required</div>
+            <div class="text-xs font-mono font-bold text-indigo-700 mt-1">We × Ke</div>
+          </div>
+
+          <span class="text-slate-400 font-bold text-lg">→</span>
+
+          <div class="flex-1 w-full bg-slate-900 text-white p-3 rounded-xl text-center shadow-md">
+            <div class="text-xs font-bold text-emerald-300">Total Capital (WACC)</div>
+            <div class="text-[11px] text-slate-300 mt-0.5">Weighted Average Hurdle Rate</div>
+            <div class="text-xs font-mono font-bold text-white mt-1">Σ (Weight × Cost)</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Feature Grid: 6 Core Modules -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- A. Cost of Debt -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-emerald-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">Kd</span>
+              <span class="text-[11px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Debt Module</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">A. Cost of Debt</h3>
+            <p class="text-xs text-slate-600">Calculate pre-tax and after-tax cost of irredeemable and redeemable debentures, accounting for tax shields.</p>
+          </div>
+          <button data-go-tab="debt" class="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition">
+            Calculate Cost of Debt →
+          </button>
+        </div>
+
+        <!-- B. Preference Shares -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-amber-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">Kp</span>
+              <span class="text-[11px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Preference Module</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">B. Cost of Preference Shares</h3>
+            <p class="text-xs text-slate-600">Compute cost of irredeemable and redeemable preference capital with market price and redemption values.</p>
+          </div>
+          <button data-go-tab="pref" class="w-full py-2 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs transition">
+            Calculate Preference Cost →
+          </button>
+        </div>
+
+        <!-- C. Cost of Equity -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">Ke</span>
+              <span class="text-[11px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Equity Module</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">C. Cost of Equity</h3>
+            <p class="text-xs text-slate-600">Determine required equity returns using Dividend Growth Model (Gordon) and Capital Asset Pricing Model (CAPM).</p>
+          </div>
+          <button data-go-tab="equity" class="w-full py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition">
+            Calculate Cost of Equity →
+          </button>
+        </div>
+
+        <!-- D. WACC -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-emerald-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">Σ</span>
+              <span class="text-[11px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-medium">Core Engine</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">D. WACC Calculator</h3>
+            <p class="text-xs text-slate-600">Full capital structure weighting, WACC composition tables, contribution waterfall, and sensitivity sliders.</p>
+          </div>
+          <button data-go-tab="wacc" class="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition">
+            Open WACC Calculator →
+          </button>
+        </div>
+
+        <!-- E. Marginal Cost of Capital -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-slate-400 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">MCC</span>
+              <span class="text-[11px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Advanced</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">E. Marginal Cost & Breakpoints</h3>
+            <p class="text-xs text-slate-600">Financing breakpoints, capital exhaustion points, and the cost of raising one additional unit of new capital.</p>
+          </div>
+          <button data-go-tab="mcc" class="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition">
+            Analyze Breakpoints & MCC →
+          </button>
+        </div>
+
+        <!-- F. AI Cost Advisor -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:border-indigo-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">AI</span>
+              <span class="text-[11px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-medium">Advisor</span>
+            </div>
+            <h3 class="text-base font-bold font-heading text-slate-900">F. AI Cost of Capital Advisor</h3>
+            <p class="text-xs text-slate-600">Benchmark comparison, sensitivity commentary, leverage impacts, and financial trade-off guides.</p>
+          </div>
+          <button data-go-tab="advisor" class="w-full py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition">
+            Consult AI Advisor →
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 2: COST OF DEBT (Kd) -->
+    <!-- ============================================================== -->
+    <section id="view-debt" class="tab-view hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">Source 1</span>
+          <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Cost of Debt (Kd) Calculator</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Calculate pre-tax and after-tax cost of debt for irredeemable and redeemable borrowings.</p>
+        </div>
+        <div class="flex items-center space-x-2 no-print">
+          <button id="debt-save-btn" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            💾 Save
+          </button>
+          <button id="debt-export-csv" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtab Selector -->
+      <div class="flex space-x-2">
+        <button data-debt-subtab="irredeemable" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow">
+          Irredeemable Debt (Perpetual)
+        </button>
+        <button data-debt-subtab="redeemable" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+          Redeemable Debt (Maturity Term)
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Inputs (5 Cols) -->
+        <div class="lg:col-span-5 space-y-4">
+          
+          <!-- Irredeemable Form -->
+          <div id="debt-form-irredeemable" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Irredeemable Inputs</h3>
+            
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Annual Interest / Coupon (I)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debt-interest" type="number" step="100" value="10000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers focus:ring-2 focus:ring-emerald-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Market Value of Debt (MV)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debt-mv" type="number" step="1000" value="100000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers focus:ring-2 focus:ring-emerald-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Corporate Tax Rate (%)</label>
+              <div class="relative">
+                <input id="debt-tax" type="number" step="1" max="100" value="30" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers focus:ring-2 focus:ring-emerald-500">
+                <span class="absolute right-3 top-2.5 text-slate-400 font-semibold text-sm">%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Redeemable Form -->
+          <div id="debt-form-redeemable" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Redeemable Inputs</h3>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Nominal / Par Value</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debtr-nv" type="number" step="100" value="100000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Current Market Value (MV)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debtr-mv" type="number" step="100" value="95000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Annual Interest (I)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debtr-interest" type="number" step="100" value="9000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Redemption Value (RV)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="debtr-rv" type="number" step="100" value="100000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Years to Redemption (n)</label>
+                <input id="debtr-years" type="number" step="1" value="5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tax Rate (%)</label>
+                <input id="debtr-tax" type="number" step="1" value="30" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Results & Steps (7 Cols) -->
+        <div class="lg:col-span-7 space-y-5">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-4 rounded-2xl shadow-sm space-y-1">
+              <div class="text-xs font-medium text-emerald-200 uppercase tracking-wider">After-Tax Cost of Debt (Kd)</div>
+              <div id="debt-result-kd" class="text-3xl font-extrabold font-mono-numbers">7.00%</div>
+              <div class="text-[11px] text-emerald-100">True effective cost to company</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+              <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pre-Tax Cost</div>
+              <div id="debt-result-pretax" class="text-xl font-bold font-mono-numbers text-slate-800">Pre-Tax: 10.00%</div>
+              <div class="text-[11px] text-slate-400">Coupon yield before tax deduction</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+              <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">Tax Shield Benefit</div>
+              <div id="debt-result-taxshield" class="text-xl font-bold font-mono-numbers text-emerald-600">Tax Shield: 3.00%</div>
+              <div class="text-[11px] text-slate-400">Savings due to tax deductibility</div>
+            </div>
+          </div>
+
+          <div class="formula-display-box p-4 rounded-xl space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Formula Used:</span>
+            <div id="debt-formula-display" class="py-2 text-center text-lg font-bold text-slate-800 overflow-x-auto"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Step-by-Step Calculation Process</h3>
+            <div id="debt-steps-container" class="space-y-2.5"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 3: COST OF PREFERENCE SHARES (Kp) -->
+    <!-- ============================================================== -->
+    <section id="view-pref" class="tab-view hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">Source 2</span>
+          <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Cost of Preference Shares (Kp) Calculator</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Preference dividends are paid after corporate tax, meaning no interest tax shield applies.</p>
+        </div>
+        <div class="flex items-center space-x-2 no-print">
+          <button id="pref-save-btn" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            💾 Save
+          </button>
+          <button id="pref-export-csv" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="flex space-x-2">
+        <button data-pref-subtab="irredeemable" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 text-white shadow">
+          Irredeemable Preference Shares
+        </button>
+        <button data-pref-subtab="redeemable" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+          Redeemable Preference Shares
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-5 space-y-4">
+          <div id="pref-form-irredeemable" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Irredeemable Inputs</h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Annual Preference Dividend (D)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="pref-dividend" type="number" step="100" value="8000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Current Market Price (P₀)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="pref-price" type="number" step="500" value="100000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+          </div>
+
+          <div id="pref-form-redeemable" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Redeemable Inputs</h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Annual Dividend (D)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="prefr-dividend" type="number" step="100" value="8000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Current Market Price (MV)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="prefr-mv" type="number" step="100" value="96000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Redemption Value (RV)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="prefr-rv" type="number" step="100" value="100000" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Years to Redemption (n)</label>
+              <input id="prefr-years" type="number" step="1" value="5" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-5">
+          <div class="bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 rounded-2xl shadow-sm space-y-1">
+            <div class="text-xs font-medium text-amber-100 uppercase tracking-wider">Cost of Preference Shares (Kp)</div>
+            <div id="pref-result-kp" class="text-3xl font-extrabold font-mono-numbers">8.00%</div>
+            <div class="text-xs text-amber-100">Dividends distributed out of after-tax corporate profit</div>
+          </div>
+
+          <div class="formula-display-box p-4 rounded-xl space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Formula:</span>
+            <div id="pref-formula-display" class="py-2 text-center text-lg font-bold text-slate-800 overflow-x-auto"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Step-by-Step Working</h3>
+            <div id="pref-steps-container" class="space-y-2.5"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 4: COST OF EQUITY (Ke) -->
+    <!-- ============================================================== -->
+    <section id="view-equity" class="tab-view hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-full">Source 3</span>
+          <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Cost of Equity (Ke) Calculator</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Calculate required return on equity via CAPM or Dividend Growth Model.</p>
+        </div>
+        <div class="flex items-center space-x-2 no-print">
+          <button id="equity-save-btn" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            💾 Save
+          </button>
+          <button id="equity-export-csv" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="flex space-x-2">
+        <button data-equity-subtab="capm" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow">
+          Method 1: CAPM (Risk & Beta)
+        </button>
+        <button data-equity-subtab="dgm" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+          Method 2: Dividend Growth Model (Gordon)
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-5 space-y-4">
+          <!-- CAPM Form -->
+          <div id="equity-form-capm" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">CAPM Parameters</h3>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Risk-Free Rate (Rf) %</label>
+              <input id="equity-rf" type="number" step="0.1" value="6" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              <p class="text-[11px] text-slate-400 mt-1">E.g. Government Treasury Bond Yield.</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Beta (β) – Sensitivity to Market</label>
+              <input id="equity-beta" type="number" step="0.05" value="1.2" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              <p class="text-[11px] text-slate-500 mt-1 italic">"Beta measures how sensitive the company's equity return is to movements in the market."</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Expected Market Return (Rm) %</label>
+              <input id="equity-rm" type="number" step="0.1" value="12" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              <p class="text-[11px] text-slate-400 mt-1">E.g. Benchmark Index expected return.</p>
+            </div>
+          </div>
+
+          <!-- DGM Form -->
+          <div id="equity-form-dgm" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Dividend Growth Model Inputs</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Dividend Amount</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 font-semibold text-xs">₹</span>
+                  <input id="equity-div" type="number" step="1" value="5" class="w-full pl-6 pr-2 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Dividend Type</label>
+                <select id="equity-div-type" class="w-full px-2 py-2 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="d0" selected>Current (D₀)</option>
+                  <option value="d1">Expected Next Yr (D₁)</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Expected Dividend Growth Rate (g) %</label>
+              <input id="equity-growth" type="number" step="0.5" value="6" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Current Share Market Price (P₀)</label>
+              <div class="relative">
+                <span class="currency-symbol-label absolute left-3 top-2.5 text-slate-400 font-semibold text-sm">₹</span>
+                <input id="equity-price" type="number" step="1" value="100" class="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-sm font-mono-numbers">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-5">
+          <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white p-5 rounded-2xl shadow-sm space-y-1">
+            <div class="text-xs font-medium text-indigo-200 uppercase tracking-wider">Cost of Equity (Ke)</div>
+            <div id="equity-result-ke" class="text-3xl font-extrabold font-mono-numbers">13.20%</div>
+            <div id="equity-result-premium" class="text-xs text-indigo-100">Firm-specific Risk Premium: 7.20%</div>
+          </div>
+
+          <div class="formula-display-box p-4 rounded-xl space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Formula:</span>
+            <div id="equity-formula-display" class="py-2 text-center text-lg font-bold text-slate-800 overflow-x-auto"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Step-by-Step Derivation</h3>
+            <div id="equity-steps-container" class="space-y-2.5"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 5: WACC CALCULATOR -->
+    <!-- ============================================================== -->
+    <section id="view-wacc" class="tab-view hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Primary Engine</span>
+          <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Weighted Average Cost of Capital (WACC)</h2>
+          <p class="text-xs sm:text-sm text-slate-500">Calculate composite corporate hurdle rate based on market values and specific costs.</p>
+        </div>
+        <div class="flex items-center space-x-2 no-print">
+          <button id="wacc-save-btn" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            💾 Save
+          </button>
+          <button id="wacc-export-csv" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            📥 Export CSV
+          </button>
+          <button id="wacc-print-btn" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 shadow-2xs">
+            🖨️ Print / PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Inputs & WACC Master Table -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Inputs (4 Cols) -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Capital Structure Inputs</h3>
+
+            <!-- Debt -->
+            <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-2">
+              <span class="text-xs font-bold text-emerald-800">1. Debt Capital</span>
+              <div>
+                <label class="block text-[11px] text-slate-600">Market Value of Debt</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 text-xs font-bold">₹</span>
+                  <input id="wacc-debt-mv" type="number" step="10000" value="400000" class="w-full pl-6 pr-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">After-Tax Cost of Debt (Kd) %</label>
+                <input id="wacc-debt-cost" type="number" step="0.1" value="7" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              </div>
+            </div>
+
+            <!-- Preference -->
+            <div class="p-3 bg-amber-50/50 rounded-xl border border-amber-100 space-y-2">
+              <span class="text-xs font-bold text-amber-800">2. Preference Shares</span>
+              <div>
+                <label class="block text-[11px] text-slate-600">Market Value of Preference</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 text-xs font-bold">₹</span>
+                  <input id="wacc-pref-mv" type="number" step="10000" value="100000" class="w-full pl-6 pr-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">Cost of Preference (Kp) %</label>
+                <input id="wacc-pref-cost" type="number" step="0.1" value="8" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              </div>
+            </div>
+
+            <!-- Equity -->
+            <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-2">
+              <span class="text-xs font-bold text-indigo-800">3. Equity Capital</span>
+              <div>
+                <label class="block text-[11px] text-slate-600">Market Value of Equity</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 text-xs font-bold">₹</span>
+                  <input id="wacc-equity-mv" type="number" step="10000" value="500000" class="w-full pl-6 pr-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">Cost of Equity (Ke) %</label>
+                <input id="wacc-equity-cost" type="number" step="0.1" value="13.2" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              </div>
+            </div>
+
+            <!-- Benchmark -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700">Target / Benchmark WACC (%)</label>
+              <input id="wacc-benchmark" type="number" step="0.1" value="9.8" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              <p class="text-[10px] text-slate-400 mt-0.5">Used by AI Advisor for contextual comparison.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Results, Table & Charts (8 Cols) -->
+        <div class="lg:col-span-8 space-y-5">
+          
+          <!-- Large Final Value Card -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-5 rounded-2xl shadow-sm flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-emerald-200 uppercase tracking-wider">Weighted Average Cost of Capital</div>
+                <div id="wacc-result-value" class="text-4xl font-extrabold font-mono-numbers mt-1">10.20%</div>
+                <div class="text-xs text-emerald-100 mt-1">Hurdle rate for company investment projects</div>
+              </div>
+              <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-2xl">
+                WACC
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <div class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Firm Capital (V)</div>
+                <div id="wacc-result-totalcap" class="text-2xl font-bold font-mono-numbers text-slate-800 mt-1">₹1,000,000.00</div>
+                <div class="text-xs text-slate-400 mt-1">Sum of Debt + Preference + Equity</div>
+              </div>
+              <button data-go-tab="advisor" class="px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold hover:bg-indigo-100 transition">
+                AI Analysis →
+              </button>
+            </div>
+          </div>
+
+          <!-- Detailed WACC Table -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Financing Structure & WACC Schedule</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 uppercase border-b border-slate-200">
+                  <tr>
+                    <th class="py-2.5 px-3">Financing Source</th>
+                    <th class="py-2.5 px-3 text-right">Market Value</th>
+                    <th class="py-2.5 px-3 text-right">Weight (W)</th>
+                    <th class="py-2.5 px-3 text-right">Cost (K)</th>
+                    <th class="py-2.5 px-3 text-right">Weighted Cost (W × K)</th>
+                  </tr>
+                </thead>
+                <tbody id="wacc-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Formula & Steps -->
+          <div class="formula-display-box p-4 rounded-xl space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Formula:</span>
+            <div id="wacc-formula-display" class="py-2 text-center text-lg font-bold text-slate-800 overflow-x-auto"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Step-by-Step WACC Derivation</h3>
+            <div id="wacc-steps-container" class="space-y-2.5"></div>
+          </div>
+
+          <!-- Interactive Charts -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Component Costs</h4>
+              <div class="h-48 relative">
+                <canvas id="cost-comparison-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Capital Structure Donut</h4>
+              <div class="h-48 relative">
+                <canvas id="cap-structure-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">WACC Composition Contribution</h4>
+            <div class="h-28 relative">
+              <canvas id="wacc-contribution-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- WACC Sensitivity Slider -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Live WACC Sensitivity Simulator</h4>
+                <p class="text-[11px] text-slate-500">Drag to see how shifting the Debt / Equity mix changes WACC</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-medium text-slate-500">Simulated WACC: </span>
+                <span id="sens-wacc-val" class="text-base font-bold text-emerald-700 font-mono-numbers">10.20%</span>
+              </div>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-semibold text-slate-600">
+                <span>Debt: <span id="sens-debt-val">40%</span></span>
+                <span>Equity: <span id="sens-equity-val">60%</span></span>
+              </div>
+              <input id="sens-debt-slider" type="range" min="0" max="90" value="40" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer accent-emerald-600">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 6: MARGINAL COST OF CAPITAL & BREAKPOINTS (MCC) -->
+    <!-- ============================================================== -->
+    <section id="view-mcc" class="tab-view hidden space-y-6">
+      
+      <div class="pb-4 border-b border-slate-200">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 bg-slate-200 px-2.5 py-1 rounded-full">Marginal Analysis</span>
+        <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Marginal Cost of Capital (MCC) & Financing Breakpoints</h2>
+        <p class="text-sm text-slate-500 italic mt-1">"Marginal Cost of Capital is the cost of raising one additional unit of new finance."</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Breakpoints Input Parameters</h3>
+            
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 space-y-2">
+              <span class="text-xs font-bold text-emerald-800">Debt Parameters</span>
+              <div>
+                <label class="block text-[11px] text-slate-600">Debt Available at Lower Rate</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 text-xs font-bold">₹</span>
+                  <input id="bp-debt-avail" type="number" step="10000" value="300000" class="w-full pl-6 pr-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">Target Debt Weight (%)</label>
+                <input id="bp-debt-weight" type="number" step="1" value="40" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              </div>
+            </div>
+
+            <div class="p-3 bg-indigo-50 rounded-xl border border-indigo-100 space-y-2">
+              <span class="text-xs font-bold text-indigo-800">Equity Parameters</span>
+              <div>
+                <label class="block text-[11px] text-slate-600">Retained Earnings / Cheap Equity Available</label>
+                <div class="relative">
+                  <span class="currency-symbol-label absolute left-2.5 top-2 text-slate-400 text-xs font-bold">₹</span>
+                  <input id="bp-equity-avail" type="number" step="10000" value="500000" class="w-full pl-6 pr-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">Target Equity Weight (%)</label>
+                <input id="bp-equity-weight" type="number" step="1" value="60" class="w-full px-2 py-1.5 border border-slate-300 rounded text-xs font-mono-numbers">
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">New Tranche Financing Costs</h3>
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <label class="block text-[11px] text-slate-600">New Debt (₹)</label>
+                <input id="mcc-new-debt" type="number" value="300000" class="w-full p-1.5 border border-slate-300 rounded">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">New Kd (%)</label>
+                <input id="mcc-new-kd" type="number" value="8" class="w-full p-1.5 border border-slate-300 rounded">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">New Equity (₹)</label>
+                <input id="mcc-new-equity" type="number" value="500000" class="w-full p-1.5 border border-slate-300 rounded">
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-600">New Ke (%)</label>
+                <input id="mcc-new-ke" type="number" value="14.5" class="w-full p-1.5 border border-slate-300 rounded">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-5">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Debt Financing Breakpoint</span>
+              <div id="bp-result-debt" class="text-2xl font-bold font-mono-numbers text-emerald-700 mt-1">₹750,000.00</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Total capital raising threshold where cheap debt expires</div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Equity Financing Breakpoint</span>
+              <div id="bp-result-equity" class="text-2xl font-bold font-mono-numbers text-indigo-700 mt-1">₹833,333.33</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Threshold where retained earnings are fully absorbed</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Financing Breakpoint Schedule</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 uppercase border-b border-slate-200">
+                  <tr>
+                    <th class="py-2.5 px-3">Capital Source</th>
+                    <th class="py-2.5 px-3 text-right">Available at Current Cost</th>
+                    <th class="py-2.5 px-3 text-right">Target Weight</th>
+                    <th class="py-2.5 px-3 text-right">Financing Breakpoint</th>
+                  </tr>
+                </thead>
+                <tbody id="bp-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Marginal WACC Card -->
+          <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 rounded-2xl shadow-sm space-y-2">
+            <div class="text-xs font-semibold text-emerald-300 uppercase tracking-wider">Incremental Marginal WACC (New Tranche)</div>
+            <div id="mcc-marginal-wacc" class="text-3xl font-extrabold font-mono-numbers">12.06%</div>
+            <div id="mcc-flow-text" class="text-xs text-slate-300"></div>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Breakpoint Derivation Steps</h3>
+            <div id="bp-steps-container" class="space-y-2"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 7: CAPITAL STRUCTURE COMPARISON -->
+    <!-- ============================================================== -->
+    <section id="view-compare" class="tab-view hidden space-y-6">
+      
+      <div class="pb-4 border-b border-slate-200">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">What-If Lab</span>
+        <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Capital Structure Comparison</h2>
+        <p class="text-sm text-slate-500">Analyze how changing the financing mix between Debt and Equity affects WACC.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Scenario A Card -->
+        <div class="bg-white p-6 rounded-2xl border-2 border-emerald-300 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full">Scenario A</span>
+            <span class="text-xs text-slate-400 font-mono">Conservative Mix</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700">Debt %</label>
+              <input id="scen-a-debt" type="number" value="40" class="w-full p-2 border border-slate-300 rounded text-sm font-mono-numbers">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700">Equity %</label>
+              <input id="scen-a-equity" type="number" value="60" class="w-full p-2 border border-slate-300 rounded text-sm font-mono-numbers">
+            </div>
+          </div>
+          <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+            <div class="text-xs text-emerald-800 font-semibold">Resulting WACC:</div>
+            <div id="scen-a-wacc-val" class="text-3xl font-extrabold text-emerald-900 font-mono-numbers mt-1">10.72%</div>
+          </div>
+        </div>
+
+        <!-- Scenario B Card -->
+        <div class="bg-white p-6 rounded-2xl border-2 border-indigo-300 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-800 bg-indigo-100 px-2.5 py-1 rounded-full">Scenario B</span>
+            <span class="text-xs text-slate-400 font-mono">Leveraged Mix</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700">Debt %</label>
+              <input id="scen-b-debt" type="number" value="60" class="w-full p-2 border border-slate-300 rounded text-sm font-mono-numbers">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700">Equity %</label>
+              <input id="scen-b-equity" type="number" value="40" class="w-full p-2 border border-slate-300 rounded text-sm font-mono-numbers">
+            </div>
+          </div>
+          <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
+            <div class="text-xs text-indigo-800 font-semibold">Resulting WACC:</div>
+            <div id="scen-b-wacc-val" class="text-3xl font-extrabold text-indigo-900 font-mono-numbers mt-1">9.48%</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Common Costs -->
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-4 text-xs">
+        <span class="font-bold text-slate-700">Assumed Costs:</span>
+        <div class="flex items-center space-x-1.5">
+          <label class="text-slate-500">Kd (%):</label>
+          <input id="scen-kd" type="number" step="0.1" value="7" class="w-16 p-1 border border-slate-300 rounded font-mono-numbers">
+        </div>
+        <div class="flex items-center space-x-1.5">
+          <label class="text-slate-500">Ke (%):</label>
+          <input id="scen-ke" type="number" step="0.1" value="13.2" class="w-16 p-1 border border-slate-300 rounded font-mono-numbers">
+        </div>
+        <div id="scen-diff-val" class="text-emerald-700 font-semibold ml-auto"></div>
+      </div>
+
+      <!-- Comparison Chart -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Visual Financing Mix vs WACC</h3>
+        <div class="h-64 relative">
+          <canvas id="scenario-chart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 8: AI COST OF CAPITAL ADVISOR -->
+    <!-- ============================================================== -->
+    <section id="view-advisor" class="tab-view hidden space-y-6">
+      
+      <div class="pb-4 border-b border-slate-200">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2.5 py-1 rounded-full">AI Executive Brief</span>
+        <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">AI Cost of Capital Advisor</h2>
+        <p class="text-sm text-slate-500">Contextual financial analysis, benchmark comparison, leverage sensitivities, and cost reduction trade-offs.</p>
+      </div>
+
+      <!-- Benchmark Configuration Strip -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-4 text-xs">
+        <span class="font-bold text-slate-800">Benchmark Settings:</span>
+        <div class="flex items-center space-x-2">
+          <label class="text-slate-600">Benchmark WACC (%):</label>
+          <input id="advisor-benchmark-input" type="number" step="0.1" value="9.8" class="w-20 p-1.5 border border-slate-300 rounded font-mono-numbers">
+        </div>
+        <div class="flex items-center space-x-2">
+          <label class="text-slate-600">Industry / Sector:</label>
+          <input id="advisor-industry-input" type="text" placeholder="e.g. FMCG / Tech" value="Manufacturing Sector" class="w-40 p-1.5 border border-slate-300 rounded">
+        </div>
+      </div>
+
+      <!-- Core AI Insight Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+            AI
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Executive Financial Analysis</h3>
+            <p class="text-xs text-slate-500">Current WACC: <span id="ai-wacc-headline" class="font-bold text-indigo-700">10.20%</span></p>
+          </div>
+        </div>
+
+        <p id="ai-core-meaning" class="text-sm text-slate-700 leading-relaxed font-medium p-4 bg-slate-50 rounded-xl border border-slate-200"></p>
+
+        <!-- Benchmark Comparison Alert -->
+        <div id="ai-benchmark-box" class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/60 space-y-1">
+          <div class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Benchmark Comparison</div>
+          <div class="text-sm font-semibold text-slate-800">Difference: <span id="ai-bench-diff" class="text-indigo-700 font-bold"></span></div>
+          <p id="ai-bench-commentary" class="text-xs text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <!-- Key Influencing Drivers -->
+        <div class="space-y-2 pt-2">
+          <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Key Factors Influencing Your WACC</h4>
+          <ul id="ai-factors-list" class="space-y-1 bg-slate-50 p-4 rounded-xl border border-slate-200"></ul>
+        </div>
+
+        <!-- Sensitivity Insights Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">What Happens If Debt Increases?</h5>
+            <p id="ai-debt-impact" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line"></p>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">What Happens If Equity Increases?</h5>
+            <p id="ai-equity-impact" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line"></p>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Tax Rate Effect on Debt</h5>
+            <p id="ai-tax-effect" class="text-xs text-slate-600 leading-relaxed"></p>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+            <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Market Risk & Beta Effect on Equity</h5>
+            <p id="ai-market-risk-effect" class="text-xs text-slate-600 leading-relaxed"></p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Ways to Reduce Financing Costs -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Financial Considerations for Improving Financing Costs</h3>
+          <p class="text-xs text-slate-500">Evaluated as corporate-finance trade-offs rather than specific investment recommendations.</p>
+        </div>
+        <div id="ai-improvement-container" class="space-y-4"></div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 9: LEARN COST OF CAPITAL (HANDBOOK) -->
+    <!-- ============================================================== -->
+    <section id="view-learn" class="tab-view hidden space-y-6">
+      
+      <div class="pb-4 border-b border-slate-200">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">Commerce Study Notes</span>
+        <h2 class="text-2xl font-bold font-heading text-slate-900 mt-1">Learn Cost of Capital – Conceptual Handbook</h2>
+        <p class="text-sm text-slate-500">Theory, formulas, importance, and practical case studies for finance students.</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2 pb-2">
+        <button data-learn-topic="overview" class="px-3.5 py-2 rounded-xl text-xs font-bold border-2 border-emerald-600 bg-emerald-50 text-emerald-800">
+          Overview & WACC
+        </button>
+        <button data-learn-topic="debt" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+          Cost of Debt (Kd)
+        </button>
+        <button data-learn-topic="equity" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+          Cost of Equity (Ke)
+        </button>
+        <button data-learn-topic="mcc" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
+          Marginal Cost & Breakpoints
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+        <h3 id="learn-topic-title" class="text-2xl font-bold font-heading text-slate-900"></h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Definition & Meaning</h4>
+            <p id="learn-topic-def" class="text-xs text-slate-700 leading-relaxed"></p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Why It Matters in Corporate Finance</h4>
+            <p id="learn-topic-importance" class="text-xs text-slate-700 leading-relaxed"></p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Mathematical Formula</h4>
+          <div class="formula-display-box p-4 rounded-xl">
+            <div id="learn-topic-formula" class="text-center text-lg font-bold text-slate-800"></div>
+          </div>
+        </div>
+
+        <div class="p-5 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+          <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Real-World Practical Case</h4>
+          <p id="learn-topic-realworld" class="text-xs text-slate-700 leading-relaxed"></p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 10: CALCULATION HISTORY -->
+    <!-- ============================================================== -->
+    <section id="view-history" class="tab-view hidden space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200 gap-3">
+        <div>
+          <h2 class="text-2xl font-bold font-heading text-slate-900">Calculation History</h2>
+          <p class="text-sm text-slate-500">Persistent log of all calculations saved locally in your browser.</p>
+        </div>
+        <div class="flex items-center space-x-2 no-print">
+          <button id="history-export-csv" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 hover:bg-slate-50 shadow-2xs">
+            📥 Export All CSV
+          </button>
+          <button id="history-clear-btn" class="px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700 hover:bg-rose-100 shadow-2xs">
+            🗑️ Clear History
+          </button>
+        </div>
+      </div>
+
+      <div id="history-items-container" class="space-y-3"></div>
+
+      <div id="history-empty-state" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200">
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-lg font-bold">
+          ∅
+        </div>
+        <h3 class="text-base font-bold text-slate-700">No Calculation Records Found</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+          Perform a calculation in Cost of Debt, Preference, Equity, or WACC and click "Save" to log it here.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-xs text-slate-500 mt-12 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-slate-700">Cost of Capital Studio (Edu Edition)</span>
+        <span>•</span>
+        <span>Corporate Finance & WACC AI Advisor</span>
+      </div>
+      <div>
+        Standard Corporate Finance Mathematics • Precision Verified
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/wacc-math.js"></script>
+  <script src="js/advisor.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
